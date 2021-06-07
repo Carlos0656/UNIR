@@ -16,8 +16,22 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
         - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
+        - dynamodb:DeleteItemr
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      def detect_language_task(task)
+          response = comprehend.detect_dominant_lenguage(Text='string')
+          
+          return response
+      
+      def translate_task(task, source, target):
+          
+          response = translate.translate_text(
+          Text=task
+          SourceLanguageCode = source
+          TargetLanguageCode = target)
+          
+          resturn response
+          
 
 functions:
   create:
