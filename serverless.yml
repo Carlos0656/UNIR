@@ -1,5 +1,6 @@
 app: todo-list-serverless
 service: api-rest
+org: carlos065
 
 frameworkVersion: ">=1.1.0"
 
@@ -18,6 +19,18 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      Effect: Allow
+      Action:
+        - translate:*
+        - comprehend:DetectDominantLanguage
+        - cloudwatch:GetMetricStatistics
+        - cloudwatch:ListMetrics
+        - s3:ListAllMyBuckets
+        - s3:ListBucket
+        - s3:GetBucketLocation
+        - iam:ListRoles
+        - iam:GetRole
+      Resource: "*"
 
 functions:
   create:
@@ -58,6 +71,14 @@ functions:
       - http:
           path: todos/{id}
           method: delete
+          cors: true
+          
+  translate:
+    handler: todos/translate.translate
+    events:
+      - http:
+          path: todos/{id}/{lng}
+          method: get
           cors: true
 
 resources:
